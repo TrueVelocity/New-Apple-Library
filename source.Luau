@@ -609,6 +609,101 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
 
     window = {}
 
+    function window:Section(opts)
+    opts = typeof(opts) == "table" and opts or { Text = opts }
+
+    local text = opts.Text or "Section"
+    local image = opts.Image
+
+    local sidebar2 = Instance.new("TextButton")
+    sidebar2.Name = "sidebar2"
+    sidebar2.Parent = sidebar
+    sidebar2.BackgroundColor3 = Color3.fromRGB(21, 103, 251)
+    sidebar2.BackgroundTransparency = 1
+    sidebar2.Size = UDim2.new(0, 226, 0, 37)
+    sidebar2.ZIndex = 2
+    sidebar2.AutoButtonColor = false
+    sidebar2.Font = Enum.Font.Gotham
+    sidebar2.Text = text
+    sidebar2.TextColor3 = Color3.fromRGB(0, 0, 0)
+    sidebar2.TextSize = 21
+
+    local uc_10 = Instance.new("UICorner")
+    uc_10.CornerRadius = UDim.new(0, 9)
+    uc_10.Parent = sidebar2
+    table.insert(sections, sidebar2)
+
+    -- ICON SUPPORT
+    if image then
+        local assetId = ResolveIcon(image) or image
+        local icon = Instance.new("ImageLabel")
+        icon.Name = "icon"
+        icon.Parent = sidebar2
+        icon.BackgroundTransparency = 1
+        icon.Position = UDim2.new(0, 5, 0.5, -11)
+        icon.Size = UDim2.new(0, 22, 0, 22)
+        icon.Image = "rbxassetid://" .. assetId
+        icon.ImageColor3 = Color3.fromRGB(95, 95, 95)
+
+        sidebar2.Text = "      " .. text
+        sidebar2.TextXAlignment = Enum.TextXAlignment.Left
+    end
+
+    local workareamain = Instance.new("ScrollingFrame")
+    workareamain.Name = "workareamain"
+    workareamain.Parent = workarea
+    workareamain.Active = true
+    workareamain.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    workareamain.BackgroundTransparency = 1
+    workareamain.BorderSizePixel = 0
+    workareamain.Position = UDim2.new(0.0393013097, 0, 0.0958904102, 0)
+    workareamain.Size = UDim2.new(0, 422, 0, 512)
+    workareamain.ZIndex = 3
+    workareamain.CanvasSize = UDim2.new(0, 0, 0, 0)
+    workareamain.ScrollBarThickness = 2
+    workareamain.Visible = false
+
+    local ull = Instance.new("UIListLayout")
+    ull.Parent = workareamain
+    ull.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    ull.SortOrder = Enum.SortOrder.LayoutOrder
+    ull.Padding = UDim.new(0, 5)
+
+    table.insert(workareas, workareamain)
+
+    local sec = {}
+
+    function sec:Select()
+        for _, v in next, sections do
+            v.BackgroundTransparency = 1
+            v.TextColor3 = Color3.fromRGB(0, 0, 0)
+        end
+        sidebar2.BackgroundTransparency = 0
+        sidebar2.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+        for _, v in next, workareas do
+            v.Visible = false
+        end
+        workareamain.Visible = true
+    end
+
+    function sec:Divider(name)
+        local section = Instance.new("TextLabel")
+        section.Name = "section"
+        section.Parent = workareamain
+        section.BackgroundTransparency = 1
+        section.Size = UDim2.new(0, 418, 0, 50)
+        section.Font = Enum.Font.Gotham
+        section.Text = name
+        section.TextColor3 = Color3.fromRGB(95, 95, 95)
+        section.TextSize = 21
+        section.TextXAlignment = Enum.TextXAlignment.Left
+    end
+
+    sec._workarea = workareamain
+    return sec
+end
+
     function window:ToggleVisible()
         if dbcooper then return end
         visible = not visible
@@ -786,100 +881,6 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
     end
 end
 
-function window:Section(opts)
-    opts = typeof(opts) == "table" and opts or { Text = opts }
-
-    local text = opts.Text or "Section"
-    local image = opts.Image
-
-    local sidebar2 = Instance.new("TextButton")
-    sidebar2.Name = "sidebar2"
-    sidebar2.Parent = sidebar
-    sidebar2.BackgroundColor3 = Color3.fromRGB(21, 103, 251)
-    sidebar2.BackgroundTransparency = 1
-    sidebar2.Size = UDim2.new(0, 226, 0, 37)
-    sidebar2.ZIndex = 2
-    sidebar2.AutoButtonColor = false
-    sidebar2.Font = Enum.Font.Gotham
-    sidebar2.Text = text
-    sidebar2.TextColor3 = Color3.fromRGB(0, 0, 0)
-    sidebar2.TextSize = 21
-
-    local uc_10 = Instance.new("UICorner")
-    uc_10.CornerRadius = UDim.new(0, 9)
-    uc_10.Parent = sidebar2
-    table.insert(sections, sidebar2)
-
-    -- ICON SUPPORT
-    if image then
-        local assetId = ResolveIcon(image) or image
-        local icon = Instance.new("ImageLabel")
-        icon.Name = "icon"
-        icon.Parent = sidebar2
-        icon.BackgroundTransparency = 1
-        icon.Position = UDim2.new(0, 5, 0.5, -11)
-        icon.Size = UDim2.new(0, 22, 0, 22)
-        icon.Image = "rbxassetid://" .. assetId
-        icon.ImageColor3 = Color3.fromRGB(95, 95, 95)
-
-        sidebar2.Text = "      " .. text
-        sidebar2.TextXAlignment = Enum.TextXAlignment.Left
-    end
-
-    local workareamain = Instance.new("ScrollingFrame")
-    workareamain.Name = "workareamain"
-    workareamain.Parent = workarea
-    workareamain.Active = true
-    workareamain.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    workareamain.BackgroundTransparency = 1
-    workareamain.BorderSizePixel = 0
-    workareamain.Position = UDim2.new(0.0393013097, 0, 0.0958904102, 0)
-    workareamain.Size = UDim2.new(0, 422, 0, 512)
-    workareamain.ZIndex = 3
-    workareamain.CanvasSize = UDim2.new(0, 0, 0, 0)
-    workareamain.ScrollBarThickness = 2
-    workareamain.Visible = false
-
-    local ull = Instance.new("UIListLayout")
-    ull.Parent = workareamain
-    ull.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    ull.SortOrder = Enum.SortOrder.LayoutOrder
-    ull.Padding = UDim.new(0, 5)
-
-    table.insert(workareas, workareamain)
-
-    local sec = {}
-
-    function sec:Select()
-        for _, v in next, sections do
-            v.BackgroundTransparency = 1
-            v.TextColor3 = Color3.fromRGB(0, 0, 0)
-        end
-        sidebar2.BackgroundTransparency = 0
-        sidebar2.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-        for _, v in next, workareas do
-            v.Visible = false
-        end
-        workareamain.Visible = true
-    end
-
-    function sec:Divider(name)
-        local section = Instance.new("TextLabel")
-        section.Name = "section"
-        section.Parent = workareamain
-        section.BackgroundTransparency = 1
-        section.Size = UDim2.new(0, 418, 0, 50)
-        section.Font = Enum.Font.Gotham
-        section.Text = name
-        section.TextColor3 = Color3.fromRGB(95, 95, 95)
-        section.TextSize = 21
-        section.TextXAlignment = Enum.TextXAlignment.Left
-    end
-
-    sec._workarea = workareamain
-    return sec
-end
 
 function sec:Keybind(opts, callback)
     opts = opts or {}
