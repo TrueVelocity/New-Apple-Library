@@ -1,120 +1,139 @@
---!strict
--- Apple UI - Gen2 Example LocalScript
+--========================================================--
+-- APPLEUI-GEN2 DEMO SCRIPT (All Elements Showcase)
+--========================================================--
 
--- Load the library
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/TrueVelocity/New-Apple-Library/refs/heads/main/source.Luau"))()
+local AppleUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/TrueVelocity/AppleUI-Gen2/refs/heads/main/newsource.luau"))()
 
--- Create the main window
-local window = library:init("My Apple UI", true, Enum.KeyCode.RightShift, true)
+-- Initialize
+AppleUI:Initialize()
 
--- Add a divider to the sidebar
-window:Divider("Main Section")
+--========================================================--
+-- CREATE MAIN WINDOW
+--========================================================--
 
--- Create a section
-local section = window:Section("Demo Elements")
+local MainWindow = AppleUI.API.CreateWindow("Demo Window", "apple", 500, 400)
 
--- Add a label
-section:Label({
-    Text = "Welcome to Apple UI - Gen2!"
-})
+--========================================================--
+-- CREATE SECTIONS
+--========================================================--
 
--- Add a button
-section:Button({
-    Text = "Click Me",
-    Callback = function()
-        print("Button clicked!")
-        window:TempNotify("Clicked!", "You pressed the button.", "rbxassetid://12608259004")
-    end
-})
+local Elements = AppleUI.API.Sections:CreateSection("Elements", "grid-2x2")
+local Notifications = AppleUI.API.Sections:CreateSection("Notifications", "bell")
+local Utilities = AppleUI.API.Sections:CreateSection("Utilities", "wand")
+local Settings = AppleUI.API.Sections:CreateSection("Settings", "gear")
 
--- Add a switch
-section:Switch({
-    Text = "Enable Feature",
-    State = false,
-    Callback = function(state)
-        print("Switch state:", state)
-    end
-})
+--========================================================--
+-- ELEMENTS SECTION
+--========================================================--
 
--- Add a textbox
-section:Textbox({
-    Text = "Your Name",
-    Placeholder = "Type here...",
-    Callback = function(text)
-        print("You typed:", text)
-    end
-})
+Elements:AddDivider("Basic Elements")
 
--- Add a slider
-section:Slider({
-    Text = "Volume",
-    Min = 0,
-    Max = 100,
-    Value = 50,
-    Callback = function(value)
-        print("Volume set to:", value)
-    end
-})
-
--- Add a dropdown
-section:Dropdown({
-    Text = "Choose Fruit",
-    List = {"Apple", "Banana", "Grape"},
-    Callback = function(choice)
-        print("Selected:", choice)
-    end
-})
-
--- Add a multi dropdown
-section:MultiDropdown({
-    Text = "Select Perks",
-    List = {"Speed", "Strength", "Luck"},
-    Selected = {"Speed"},
-    Callback = function(values)
-        print("Selected perks:", table.concat(values, ", "))
-    end
-})
-
--- Add a color picker
-section:Colorpicker({
-    Text = "Pick a Color",
-    Color = Color3.fromRGB(255, 100, 100),
-    Callback = function(color)
-        print("Color picked:", color)
-    end
-})
-
--- Select the section by default
-section:Select()
-
--- Add a green button callback
-window:GreenButton(function()
-    print("Green button clicked!")
+Elements:AddLabel("This is a label.")
+Elements:AddButton("Click Me!", function()
+    AppleUI.API.Notifications:Notify("Hello!", "You clicked the button!", "check-circle")
 end)
 
--- Add a second section for notifications
-local notifSection = window:Section("Notifications")
+Elements:AddToggle("Toggle Me!", false, function(state)
+    AppleUI.API.Notifications:Notify("Toggle", "State: " .. tostring(state), "switch")
+end)
 
-notifSection:Button({
-    Text = "Show Notification",
-    Callback = function()
-        window:Notify("Hello!", "This is a test notification.", "OK", "rbxassetid://12608259004", function()
-            print("Notification button clicked!")
-        end)
-    end
-})
+Elements:AddSlider("Adjust Value", 0, 100, 50, function(value)
+    print("Slider value:", value)
+end)
 
-notifSection:Button({
-    Text = "Show Dual Notification",
-    Callback = function()
-        window:Notify2(
-            "Choose",
-            "Pick an option below.",
-            "Yes",
-            "No",
-            "rbxassetid://12608259004",
-            function() print("Yes clicked!") end,
-            function() print("No clicked!") end
-        )
-    end
-})
+Elements:AddInput("Enter text here...", function(text)
+    print("Input text:", text)
+end)
+
+Elements:AddDivider("Layout Test")
+AppleUI.API.Utils:Divider(Elements:GetFrame())
+
+--========================================================--
+-- NOTIFICATIONS SECTION
+--========================================================--
+
+Notifications:AddDivider("Notification Types")
+
+Notifications:AddButton("Info Notification", function()
+    AppleUI.API.Notifications:Notify("Information", "This is an info message.", "info")
+end)
+
+Notifications:AddButton("Warning Notification", function()
+    AppleUI.API.Notifications:Notify("Warning", "Be careful!", "alert-triangle")
+end)
+
+Notifications:AddButton("Success Notification", function()
+    AppleUI.API.Notifications:Notify("Success", "Operation completed!", "check-circle")
+end)
+
+Notifications:AddButton("Error Notification", function()
+    AppleUI.API.Notifications:Notify("Error", "Something went wrong.", "x-circle")
+end)
+
+--========================================================--
+-- UTILITIES SECTION
+--========================================================--
+
+Utilities:AddDivider("Visual Effects")
+
+Utilities:AddButton("Apply Blur", function()
+    AppleUI.API.Utils:Blur(true, 15)
+end)
+
+Utilities:AddButton("Remove Blur", function()
+    AppleUI.API.Utils:Blur(false)
+end)
+
+Utilities:AddButton("Add Gradient", function()
+    AppleUI.API.Utils:Gradient(MainWindow:GetFrame(), Color3.fromRGB(0, 120, 255), Color3.fromRGB(255, 255, 255), 90)
+end)
+
+Utilities:AddButton("Add Glow", function()
+    AppleUI.API.Utils:Glow(MainWindow:GetFrame(), Color3.fromRGB(0, 120, 255))
+end)
+
+Utilities:AddButton("Add Inner Shadow", function()
+    AppleUI.API.Utils:InnerShadow(MainWindow:GetFrame())
+end)
+
+--========================================================--
+-- SETTINGS SECTION
+--========================================================--
+
+Settings:AddDivider("System Controls")
+
+Settings:AddButton("Toggle Visibility", function()
+    AppleUI.API.Visibility:Toggle()
+end)
+
+Settings:AddButton("Maximize Window", function()
+    AppleUI.API.Resize:Toggle(MainWindow:GetFrame())
+end)
+
+Settings:AddButton("Unload UI", function()
+    AppleUI.API:Unload()
+end)
+
+--========================================================--
+-- KEYBINDS
+--========================================================--
+
+AppleUI.API.Keybinds:Bind(Enum.KeyCode.F, function()
+    AppleUI.API.Spotlight:Toggle()
+end)
+
+AppleUI.API.Keybinds:Bind(Enum.KeyCode.RightControl, function()
+    AppleUI.API.Visibility:Toggle()
+end)
+
+--========================================================--
+-- SPLASH SCREEN
+--========================================================--
+
+AppleUI.API.Splash:Show("AppleUI Gen3 Demo", "All systems ready!", "apple")
+
+--========================================================--
+-- FINALIZE
+--========================================================--
+
+print("[AppleUI] Demo initialized successfully.")
